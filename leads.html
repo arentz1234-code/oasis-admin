@@ -89,15 +89,6 @@
                     </svg>
                     <input type="text" id="search-input" placeholder="Search leads...">
                 </div>
-                <select id="status-filter" class="status-filter">
-                    <option value="">All Status</option>
-                    <option value="new">New</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="demo_sent">Demo Sent</option>
-                    <option value="interested">Interested</option>
-                    <option value="closed">Closed</option>
-                    <option value="not_interested">Not Interested</option>
-                </select>
                 <button class="btn-refresh" id="refresh-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M23 4v6h-6"/>
@@ -107,6 +98,44 @@
                 </button>
             </div>
         </header>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label>Status</label>
+                <select id="status-filter" class="filter-select">
+                    <option value="">All</option>
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="demo_sent">Demo Sent</option>
+                    <option value="interested">Interested</option>
+                    <option value="closed">Closed</option>
+                    <option value="not_interested">Not Interested</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Industry</label>
+                <select id="industry-filter" class="filter-select">
+                    <option value="">All Industries</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Location</label>
+                <select id="location-filter" class="filter-select">
+                    <option value="">All Locations</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Score</label>
+                <select id="score-filter" class="filter-select">
+                    <option value="">Any Score</option>
+                    <option value="hot">Hot (70+)</option>
+                    <option value="warm">Warm (40-69)</option>
+                    <option value="cold">Cold (0-39)</option>
+                </select>
+            </div>
+            <button class="btn-clear-filters" id="clear-filters">Clear Filters</button>
+        </div>
 
         <!-- Stats Cards -->
         <div class="stats-grid">

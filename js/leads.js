@@ -55,25 +55,72 @@ function setupEventListeners() {
     // Search
     document.getElementById('search-input').addEventListener('input', filterLeads);
 
-    // Status filter
+    // Filters
     document.getElementById('status-filter').addEventListener('change', filterLeads);
+    document.getElementById('industry-filter').addEventListener('change', filterLeads);
+    document.getElementById('location-filter').addEventListener('change', filterLeads);
+    document.getElementById('score-filter').addEventListener('change', filterLeads);
+
+    // Clear filters
+    document.getElementById('clear-filters').addEventListener('click', clearFilters);
 }
 
-// Filter leads based on search and status
+// Clear all filters
+function clearFilters() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('status-filter').value = '';
+    document.getElementById('industry-filter').value = '';
+    document.getElementById('location-filter').value = '';
+    document.getElementById('score-filter').value = '';
+    renderLeads(leads);
+}
+
+// Populate filter dropdowns from data
+function populateFilters(leads) {
+    const industries = [...new Set(leads.map(l => l.industry).filter(Boolean))].sort();
+    const locations = [...new Set(leads.map(l => l.location).filter(Boolean))].sort();
+
+    const industrySelect = document.getElementById('industry-filter');
+    industrySelect.innerHTML = '<option value="">All Industries</option>' +
+        industries.map(i => `<option value="${escapeHtml(i)}">${escapeHtml(i)}</option>`).join('');
+
+    const locationSelect = document.getElementById('location-filter');
+    locationSelect.innerHTML = '<option value="">All Locations</option>' +
+        locations.map(l => `<option value="${escapeHtml(l)}">${escapeHtml(l)}</option>`).join('');
+}
+
+// Filter leads based on all filters
 function filterLeads() {
     const query = document.getElementById('search-input').value.toLowerCase();
     const status = document.getElementById('status-filter').value;
+    const industry = document.getElementById('industry-filter').value;
+    const location = document.getElementById('location-filter').value;
+    const scoreFilter = document.getElementById('score-filter').value;
 
     const filtered = leads.filter(lead => {
-        const matchesQuery =
+        // Text search
+        const matchesQuery = !query ||
             (lead.company || '').toLowerCase().includes(query) ||
             (lead.industry || '').toLowerCase().includes(query) ||
             (lead.location || '').toLowerCase().includes(query) ||
             (lead.email || '').toLowerCase().includes(query);
 
+        // Status filter
         const matchesStatus = !status || lead.status === status;
 
-        return matchesQuery && matchesStatus;
+        // Industry filter
+        const matchesIndustry = !industry || lead.industry === industry;
+
+        // Location filter
+        const matchesLocation = !location || lead.location === location;
+
+        // Score filter
+        let matchesScore = true;
+        if (scoreFilter === 'hot') matchesScore = (lead.score || 0) >= 70;
+        else if (scoreFilter === 'warm') matchesScore = (lead.score || 0) >= 40 && (lead.score || 0) < 70;
+        else if (scoreFilter === 'cold') matchesScore = (lead.score || 0) < 40;
+
+        return matchesQuery && matchesStatus && matchesIndustry && matchesLocation && matchesScore;
     });
 
     renderLeads(filtered);
@@ -100,6 +147,7 @@ async function loadLeads() {
             leads = data || [];
         }
 
+        populateFilters(leads);
         renderLeads(leads);
         updateStats(leads);
     } catch (error) {
