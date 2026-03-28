@@ -114,11 +114,9 @@ function filterLeads() {
         // Location filter
         const matchesLocation = !location || lead.location === location;
 
-        // Score filter
+        // Score filter (score is a string: "hot", "warm", "cold")
         let matchesScore = true;
-        if (scoreFilter === 'hot') matchesScore = (lead.score || 0) >= 70;
-        else if (scoreFilter === 'warm') matchesScore = (lead.score || 0) >= 40 && (lead.score || 0) < 70;
-        else if (scoreFilter === 'cold') matchesScore = (lead.score || 0) < 40;
+        if (scoreFilter) matchesScore = lead.score === scoreFilter;
 
         return matchesQuery && matchesStatus && matchesIndustry && matchesLocation && matchesScore;
     });
@@ -229,13 +227,13 @@ function renderLeads(leadsToRender) {
 // Update stats cards
 function updateStats(leads) {
     const total = leads.length;
-    const hot = leads.filter(l => (l.score || 0) >= 70).length;
-    const newLeads = leads.filter(l => l.status === 'new' || !l.status).length;
+    const hot = leads.filter(l => l.score === 'hot').length;
+    const found = leads.filter(l => l.status === 'found' || !l.status).length;
     const demoSent = leads.filter(l => l.status === 'demo_sent' || l.demo_url).length;
 
     document.getElementById('total-leads').textContent = total;
     document.getElementById('hot-leads').textContent = hot;
-    document.getElementById('new-leads').textContent = newLeads;
+    document.getElementById('new-leads').textContent = found;
     document.getElementById('demo-sent').textContent = demoSent;
 }
 
@@ -296,13 +294,13 @@ function shortenUrl(url) {
 }
 
 function getScoreClass(score) {
-    if (score >= 70) return 'hot';
-    if (score >= 40) return 'warm';
-    return 'cold';
+    // Score is a string: "hot", "warm", or "cold"
+    return score || 'cold';
 }
 
 function formatStatus(status) {
     const statusMap = {
+        'found': 'Found',
         'new': 'New',
         'contacted': 'Contacted',
         'demo_sent': 'Demo Sent',
@@ -310,5 +308,5 @@ function formatStatus(status) {
         'closed': 'Closed',
         'not_interested': 'Not Interested'
     };
-    return statusMap[status] || 'New';
+    return statusMap[status] || 'Found';
 }

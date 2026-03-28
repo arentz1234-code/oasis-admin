@@ -587,6 +587,11 @@ body {
 }
 
 /* Leads Status Badges */
+.status-badge.found {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
+}
+
 .status-badge.new {
     background: rgba(59, 130, 246, 0.1);
     color: var(--primary);
