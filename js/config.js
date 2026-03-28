@@ -5,9 +5,8 @@ const CONFIG = {
     PASSWORD: 'oasis2024',
 
     // Supabase Configuration
-    // You'll need to replace these with your actual Supabase credentials
-    SUPABASE_URL: 'YOUR_SUPABASE_URL',
-    SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY',
+    SUPABASE_URL: 'https://tzsatbviltcvelicbxoa.supabase.co',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6c2F0YnZpbHRjdmVsaWNieG9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzM1MzAsImV4cCI6MjA5MDMwOTUzMH0.y8TxI5GFeKPgtXnkJ8Z83O0C7pJHvWCZVtJo2Oon6xw',
 
     // Session settings
     SESSION_KEY: 'oasis_admin_session',
