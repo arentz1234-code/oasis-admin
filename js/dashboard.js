@@ -11,8 +11,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // Initialize Supabase if configured
-    if (!CONFIG.USE_MOCK && typeof window.supabase !== 'undefined') {
-        supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+    console.log('USE_MOCK:', CONFIG.USE_MOCK);
+    console.log('Supabase available:', typeof window.supabase);
+    if (!CONFIG.USE_MOCK) {
+        // UMD build exposes supabase.createClient directly
+        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+            supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+            console.log('Supabase client initialized (UMD)');
+        } else {
+            console.error('Supabase library not loaded properly!');
+            console.log('window.supabase:', window.supabase);
+        }
+    } else {
+        console.log('Using mock data');
     }
 
     // Load sites
@@ -52,9 +63,9 @@ function setupEventListeners() {
     document.getElementById('search-input').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
         renderSites(sites.filter(site =>
-            site.business_name.toLowerCase().includes(query) ||
-            site.location.toLowerCase().includes(query) ||
-            site.deployment_url.toLowerCase().includes(query)
+            (site.business_name || '').toLowerCase().includes(query) ||
+            (site.location || '').toLowerCase().includes(query) ||
+            (site.deployment_url || '').toLowerCase().includes(query)
         ));
     });
 }
@@ -66,18 +77,32 @@ async function loadSites() {
     try {
         if (CONFIG.USE_MOCK) {
             // Use mock data
+            console.log('Loading mock data');
             sites = MOCK_SITES;
+        } else if (!supabase) {
+            console.error('Supabase client not initialized!');
+            sites = [];
         } else {
             // Fetch from Supabase
-            const { data, error } = await supabase
+            console.log('Fetching from Supabase...');
+            console.log('Supabase client:', supabase);
+            const response = await supabase
                 .from('sites')
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            if (error) throw error;
+            console.log('Full response:', response);
+            const { data, error } = response;
+
+            if (error) {
+                console.error('Supabase error:', error);
+                throw error;
+            }
+            console.log('Received data:', data);
             sites = data || [];
         }
 
+        console.log('Rendering', sites.length, 'sites');
         renderSites(sites);
         updateStats(sites);
     } catch (error) {
