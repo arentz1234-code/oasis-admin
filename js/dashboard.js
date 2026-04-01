@@ -152,6 +152,7 @@ function renderSites(sitesToRender) {
                 </span>
             </td>
             <td>
+                ${site.internal_views !== undefined ? `
                 <div class="view-counts">
                     <span class="view-badge internal" title="Your team's views">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -168,6 +169,11 @@ function renderSites(sitesToRender) {
                         ${site.client_views || 0}
                     </span>
                 </div>
+                ` : `
+                <span class="viewed-badge ${site.viewed ? 'yes' : 'no'}">
+                    ${site.viewed ? 'Yes (' + (site.view_count || 1) + ')' : 'Not yet'}
+                </span>
+                `}
             </td>
             <td>
                 <div class="action-buttons">
@@ -197,7 +203,10 @@ function renderSites(sitesToRender) {
 // Update stats cards
 function updateStats(sites) {
     const total = sites.length;
-    const viewed = sites.filter(s => (s.client_views || 0) > 0).length;
+    // Check if new columns exist, otherwise use old viewed field
+    const viewed = sites.filter(s =>
+        s.client_views !== undefined ? (s.client_views || 0) > 0 : s.viewed
+    ).length;
     const pending = sites.filter(s => s.status === 'pending').length;
     const emailsSent = sites.filter(s => s.email_sent).length;
 
