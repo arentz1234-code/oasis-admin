@@ -499,6 +499,41 @@ body {
     color: var(--gray);
 }
 
+/* View counts (internal vs client) */
+.view-counts {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.view-badge svg {
+    flex-shrink: 0;
+}
+
+.view-badge.internal {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--gray);
+}
+
+.view-badge.client {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--gray);
+}
+
+.view-badge.client.has-views {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--green);
+}
+
 .action-buttons {
     display: flex;
     gap: 0.5rem;

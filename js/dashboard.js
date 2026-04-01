@@ -152,9 +152,22 @@ function renderSites(sitesToRender) {
                 </span>
             </td>
             <td>
-                <span class="viewed-badge ${site.viewed ? 'yes' : 'no'}">
-                    ${site.viewed ? `Yes (${site.view_count || 1})` : 'Not yet'}
-                </span>
+                <div class="view-counts">
+                    <span class="view-badge internal" title="Your team's views">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        ${site.internal_views || 0}
+                    </span>
+                    <span class="view-badge client ${(site.client_views || 0) > 0 ? 'has-views' : ''}" title="Client views">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        ${site.client_views || 0}
+                    </span>
+                </div>
             </td>
             <td>
                 <div class="action-buttons">
@@ -184,7 +197,7 @@ function renderSites(sitesToRender) {
 // Update stats cards
 function updateStats(sites) {
     const total = sites.length;
-    const viewed = sites.filter(s => s.viewed).length;
+    const viewed = sites.filter(s => (s.client_views || 0) > 0).length;
     const pending = sites.filter(s => s.status === 'pending').length;
     const emailsSent = sites.filter(s => s.email_sent).length;
 
